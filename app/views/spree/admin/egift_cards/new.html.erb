@@ -1,0 +1,14 @@
+<% content_for :page_title do %>
+  <%= Spree.t(:new_egift_card) %>
+<% end %>
+
+
+
+<%= render :partial => 'spree/shared/error_messages', :locals => { :target => @egift_card } %>
+
+<%= form_for [:admin, @egift_card] do |f| %>
+  <fieldset class="no-border-top">
+    <%= render :partial => 'form', :locals => { :f => f } %>
+    <%= render :partial => 'spree/admin/shared/new_resource_links' %>
+  </fieldset>
+<% end %>
