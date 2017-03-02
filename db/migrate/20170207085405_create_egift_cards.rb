@@ -10,14 +10,17 @@ class CreateEgiftCards < ActiveRecord::Migration
       t.string :sender_lastname
       t.decimal :current_value          , null: false, precision: 8, scale: 2
       t.decimal :original_value         , null: false, precision: 8, scale: 2
-      t.string :currency                , null: false
-      t.integer :purchaser_id           , null: false
+      t.string  :currency               , null: false
+      t.integer :purchaser_id
       t.integer :redeemer_id
       t.integer :line_item_id
       t.integer :store_id
       t.integer :region_id
+      t.datetime :purchased_at
       t.datetime :send_at
       t.datetime :redeemed_at
+      t.integer  :tax_category_id
+      t.integer  :shipping_category_id
       t.timestamps
     end
   end

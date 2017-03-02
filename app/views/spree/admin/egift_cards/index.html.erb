@@ -2,23 +2,18 @@
   <%= Spree.t(:egift_cards) %>
 <% end %>
 
-<% content_for :page_actions do %>
-  <li>
-    <%= button_link_to Spree.t(:new_egift_card), new_admin_egift_card_url, :icon => 'icon-plus' %>
-  </li>
-<% end %>
-
 <% content_for :table_filter_title do %>
   <h2>Testing</h2>
 <% end %>
 
-<table class="index">
+<table class="table">
   <thead>
     <tr>
       <th><%= Spree.t(:code) %></th>
       <th><%= Spree.t(:original_value) %></th>
       <th><%= Spree.t(:current_value) %></th>
       <th><%= Spree.t(:email) %></th>
+      <th><%= Spree.t(:valid?) %></th>
       <th class="actions" width="100"></th>
     </tr>
   </thead>
@@ -29,6 +24,7 @@
         <td><%= number_to_currency card.original_value %></td>
         <td><%= number_to_currency card.current_value %></td>
         <td><%= card.recipient_email %></td>
+        <td><%= card.valid?  %></td>
         <td class="actions">
           <%= link_to_edit card, :no_text => true if can?(:edit, card) %>
           &nbsp;

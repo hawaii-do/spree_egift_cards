@@ -1,0 +1,11 @@
+<% content_for :page_title do %>
+  <%= Spree.t(:new_egift_cards) %>
+<% end %>
+
+<h1><%= Spree.t(:new_e_gift_cards) %></h1>
+
+<%= render :partial => 'spree/shared/error_messages', :locals => { :target => @egift_card } %>
+
+<%= form_for @egift_card do |f| %>
+  <%= render :partial => 'form', :locals => { :f => f } %>
+<% end %>

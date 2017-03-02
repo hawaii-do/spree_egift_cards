@@ -3,4 +3,9 @@
 
 en:
   spree:
-    egift_cards: 'EGift Cards'
+    egift_cards: 'E-Gift Cards'
+    egift_card: 'E-Gift Card'
+    new_egift_cards: 'Order an E-Gift Card'
+    successfully_created_gift_card:  'You have successfully created your E-Gift card.'
+    egift_code_applied: 'E-Gift code has been successfully applied to your order.'
+    egift_code_not_found: "The E-Gift code you entered doesn't exist. Please try again."
