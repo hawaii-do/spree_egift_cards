@@ -17,7 +17,7 @@ class Spree::EgiftCardsController < Spree::StoreController
 			  @egift_card.attributes 		= egift_card_params
 			  @egift_card.currency 			= current_currency
 			  @egift_card.store 				= current_store		if Spree::Store
-			  @egift_card.region 				= current_region	if Spree::Region
+			  # @egift_card.region 				= current_region	if Spree::Region
 			  @egift_card.current_value = params[:egift_card][:original_value]
 			  @egift_card.tax_category = Spree::TaxCategory.where(name: 'E-Gift Card', store_id:  @egift_card.store_id).first
 			  @egift_card.regions << current_region
@@ -54,6 +54,7 @@ class Spree::EgiftCardsController < Spree::StoreController
 
         logger.info "ORDER CREATED: #{order.inspect}"
 
+        @egift_card.order = order
         @egift_card.line_item = line_item
 			  if @egift_card.save!
 			    flash[:success] = Spree.t(:successfully_created_gift_card)

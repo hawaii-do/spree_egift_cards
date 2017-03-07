@@ -7,18 +7,20 @@ module Spree
   	belongs_to :purchaser, class_name: 'Spree::User'
   	belongs_to :redeemer, class_name: 'Spree::User'
   	belongs_to :store, class_name: 'Spree::Store'
-  	belongs_to :region, class_name: 'Spree::Region'
+  	# belongs_to :region, class_name: 'Spree::Region'
     belongs_to :tax_category, class_name: 'Spree::TaxCategory'
+    belongs_to :order, class_name: 'Spree::Order'
+    belongs_to :line_item, class_name: 'Spree::LineItem'
 
-    belongs_to :line_item
-  	has_many   :transactions, class_name: 'Spree::EgiftCardTransaction'
-
+  	has_many :transactions, class_name: 'Spree::EgiftCardTransaction'
     has_many :egift_card_regions
     has_many :regions, through: :egift_card_regions, class_name: 'Spree::Region'
 
   	validates :original_value, numericality: { greater_than: 0 }
   	validates_presence_of :message, :recipient_email, :recipient_firstname, :recipient_lastname,
   												:currency
+
+    scope :by_store, lambda { |store| where(:store_id => store.id) }
 
     def active?
       !purchased_at.nil?
@@ -54,6 +56,15 @@ module Spree
 
     def variant_ids
       [master.id]
+    end
+
+    def debit(amount, order)
+      raise 'Cannot debit gift card by amount greater than current value.' if (self.current_value - amount.to_f.abs) < 0
+      transaction = self.transactions.build
+      transaction.amount = amount
+      transaction.order  = order
+      self.current_value = self.current_value - amount.abs
+      self.save
     end
 
     # def tax_category

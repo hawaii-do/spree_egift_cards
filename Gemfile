@@ -23,6 +23,7 @@ group :development, :test do
 	gem 'amoeba'
 	gem 'pry'
 	gem 'factory_girl_rails'
+	gem 'byebug'
 end
 
 gem 'rails', '~>4.2.2'

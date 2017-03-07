@@ -1,5 +1,7 @@
 Spree::Order.class_eval do
 
+	attr_accessor :gift_code
+
 	def has_egift_card?
     line_items.map(&:egift_card).any?
   end
@@ -11,7 +13,23 @@ Spree::Order.class_eval do
 				egift_card.send_email
 			end
 		end
+		update_column(:shipment_state, 'shipped')
+	end
+
+
+
+
+	# Finalizes an in progress order after checkout is complete.
+	# Called after transition to complete state when payments will have been processed.
+	def debit_egift_cards
+		NIDECKER_LOGGER.info "DEBIT EGIFT CARDS"
+	  # Record any gift card redemptions.
+	  self.adjustments.where(source_type: 'Spree::EgiftCard').each do |adjustment|
+	  	NIDECKER_LOGGER.info "adjustment = #{adjustment.inspect}"
+	    adjustment.source.debit(adjustment.amount, self)
+	  end
 	end
 
 end
 Spree::Order.state_machine.after_transition to: :complete, do: :activate_egift_cards
+Spree::Order.state_machine.after_transition to: :complete, do: :debit_egift_cards

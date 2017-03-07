@@ -16,6 +16,7 @@ class CreateEgiftCards < ActiveRecord::Migration
       t.integer :line_item_id
       t.integer :store_id
       t.integer :region_id
+      t.integer  :order_id
       t.datetime :purchased_at
       t.datetime :send_at
       t.datetime :redeemed_at

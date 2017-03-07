@@ -1,0 +1,6 @@
+<!-- insert_after '#payment-methods'-->
+
+<p class='field' data-hook='gift_code'>
+  <%= form.label :gift_code %><br />
+  <%= form.text_field :gift_code, value: nil, class: 'form-control' %>
+</p>
