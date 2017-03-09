@@ -25,36 +25,37 @@ class Spree::EgiftCardsController < Spree::StoreController
 
 			  logger.info "EGIFT CARD CREATED: #{@egift_card.id}"
 
-			  variant = Spree::Variant.new(sku: @egift_card.code, price: @egift_card.original_value)
+			  variant = Spree::Variant.new(sku: @egift_card.code, price: @egift_card.original_value.to_f)
 			  variant.product_id = @egift_card.id
 			  variant.track_inventory = false
 			  variant.tax_category_id = @egift_card.tax_category_id
 			  variant.regions << current_region
+			  variant.currency = @egift_card.currency
 			  variant.save!
 
 			  logger.info "VARIANT CREATED: #{variant.id}"
 
-			  order = current_order(create_order_if_necessary: true)
-  			order.currency = current_currency
+			  @order = current_order(create_order_if_necessary: true)
+  			@order.currency = current_currency
 
 			  line_item = Spree::LineItem.new(quantity: 1)
-			  line_item.order = order
+			  line_item.order = @order
 			  line_item.variant = variant
-        line_item.price = @egift_card.original_value
-        line_item.currency = current_currency
+        line_item.price = @egift_card.original_value.to_f
+        line_item.currency = @egift_card.currency
         line_item.tax_category_id = @egift_card.tax_category_id
         line_item.save(validate: false)
 
         logger.info "LINE ITEM CREATED: #{line_item.id}"
 
 
-        order.line_items << line_item
-        order.update_totals
-        order.save!
+        @order.line_items << line_item
+        @order.update_totals
+        @order.save!
 
-        logger.info "ORDER CREATED: #{order.inspect}"
+        logger.info "ORDER CREATED: #{@order.inspect}"
 
-        @egift_card.order = order
+        @egift_card.order = @order
         @egift_card.line_item = line_item
 			  if @egift_card.save!
 			    flash[:success] = Spree.t(:successfully_created_gift_card)
