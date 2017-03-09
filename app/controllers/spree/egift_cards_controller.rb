@@ -10,8 +10,6 @@ class Spree::EgiftCardsController < Spree::StoreController
 	def create
 		# begin
 		# 	Spree::EgiftCard.transaction do
-				logger.info "CREATE EGIFT CARD WITH PARAMS"
-				logger.info egift_card_params
 
 				@egift_card = Spree::EgiftCard.new
 			  @egift_card.attributes 		= egift_card_params
@@ -23,17 +21,16 @@ class Spree::EgiftCardsController < Spree::StoreController
 			  @egift_card.regions << current_region
 			  @egift_card.save!
 
-			  logger.info "EGIFT CARD CREATED: #{@egift_card.id}"
-
 			  variant = Spree::Variant.new(sku: @egift_card.code, price: @egift_card.original_value.to_f)
 			  variant.product_id = @egift_card.id
 			  variant.track_inventory = false
 			  variant.tax_category_id = @egift_card.tax_category_id
 			  variant.regions << current_region
+			  variant.is_master = true
 			  variant.currency = @egift_card.currency
-			  variant.save!
+			  variant.save(validate: false)
 
-			  logger.info "VARIANT CREATED: #{variant.id}"
+			  NIDECKER_LOGGER.info "VARIANT CREATED: #{variant.inspect}"
 
 			  @order = current_order(create_order_if_necessary: true)
   			@order.currency = current_currency
@@ -46,14 +43,14 @@ class Spree::EgiftCardsController < Spree::StoreController
         line_item.tax_category_id = @egift_card.tax_category_id
         line_item.save(validate: false)
 
-        logger.info "LINE ITEM CREATED: #{line_item.id}"
+        NIDECKER_LOGGER.info "LINE ITEM CREATED: #{line_item.inspect}"
 
 
         @order.line_items << line_item
         @order.update_totals
         @order.save!
 
-        logger.info "ORDER CREATED: #{@order.inspect}"
+        NIDECKER_LOGGER.info "ORDER CREATED: #{@order.inspect}"
 
         @egift_card.order = @order
         @egift_card.line_item = line_item

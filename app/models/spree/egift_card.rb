@@ -7,7 +7,6 @@ module Spree
   	belongs_to :purchaser, class_name: 'Spree::User'
   	belongs_to :redeemer, class_name: 'Spree::User'
   	belongs_to :store, class_name: 'Spree::Store'
-  	# belongs_to :region, class_name: 'Spree::Region'
     belongs_to :tax_category, class_name: 'Spree::TaxCategory'
     belongs_to :order, class_name: 'Spree::Order'
     belongs_to :line_item, class_name: 'Spree::LineItem'
@@ -22,6 +21,25 @@ module Spree
 
     scope :by_store, lambda { |store| where(:store_id => store.id) }
 
+    # include Spree::CalculatedAdjustments
+
+    UNACTIVATABLE_ORDER_STATES = ["complete", "awaiting_return", "returned"]
+
+    def self.with_code(code)
+      where('spree_egift_cards.code = ?', code.upcase)
+    end
+
+    def self.active
+      where('spree_egift_cards.purchased_at < ?', Time.current)
+    end
+
+    def order_activatable?(order)
+      order &&
+      created_at < order.created_at &&
+      current_value > 0 &&
+      !UNACTIVATABLE_ORDER_STATES.include?(order.state)
+    end
+
     def active?
       !purchased_at.nil?
     end
@@ -31,7 +49,7 @@ module Spree
     end
 
     def name
-      'EgiftCard'
+      'Egift Card'
     end
 
     def description
@@ -58,6 +76,13 @@ module Spree
       [master.id]
     end
 
+    # Calculate amount for adjustment.
+    def compute_amount(order)
+      credits = order.adjustments.select{|a|a.amount < 0 && a.source_type != 'Spree::GiftCard'}.map(&:amount).sum
+      [(order.item_total + order.ship_total + order.additional_tax_total + credits), current_value].min * -1
+    end
+
+    # Create a transaction and reduce the current value by order amount.
     def debit(amount, order)
       raise 'Cannot debit gift card by amount greater than current value.' if (self.current_value - amount.to_f.abs) < 0
       transaction = self.transactions.build
@@ -67,9 +92,21 @@ module Spree
       self.save
     end
 
-    # def tax_category
-    #   Spree::TaxCategory.where(name: 'E-Gift Card', store_id: store_id).first
-    # end
+    # Apply egift card when checkout is updated and creates an adjustment.
+    def apply(order)
+      # Nothing to do if the gift card is already associated with the order
+      return if order.egift_credit_exists?(self)
+      order.update!
+      adj = Spree::Adjustment.create!(
+            amount: compute_amount(order),
+            order: order,
+            adjustable: order,
+            source: self,
+            mandatory: true,
+            label: "#{Spree.t(:egift_card)}"
+          )
+      order.update!
+    end
 
     def shipping_category
       Spree::ShippingCategory.where(name: 'E-Gift Card', store_id: store_id).first

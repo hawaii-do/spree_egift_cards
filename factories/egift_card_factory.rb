@@ -12,20 +12,11 @@ FactoryGirl.define do
 		original_value			"100"
 		current_value				{original_value}
 		currency						"USD"
-    code                SecureRandom.urlsafe_base64(8)
-
-		association :purchaser, factory: :jones_user
 
     before(:create) do |card|
       card.store = Spree::Store.where(code: 'jones').first || create(:jones)
-      card.region = Spree::Region.where(code: 'USA').first || create(:region_usa)
+      card.regions << (Spree::Region.where(code: 'USA').first || create(:region_usa))
     end
 
-    factory :egift_card_with_transactions do
-      after(:create) do |card|
-        create(:egift_card_transaction, egift_card: card)
-        create(:egift_card_transaction, egift_card: card)
-      end
-    end
   end
 end

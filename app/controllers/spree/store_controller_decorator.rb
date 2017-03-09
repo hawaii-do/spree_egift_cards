@@ -8,7 +8,7 @@ Spree::StoreController.class_eval do
         @order.coupon_code = params[:order][:gift_code]
       end
       return true if @order.gift_code.blank?
-      if @gift_coupon = Spree::EgiftCoupon.find_by_code(@order.gift_code) and @gift_coupon.order_activatable?(@order)
+      if @gift_coupon = Spree::EgiftCard.find_by_code(@order.gift_code) and @gift_coupon.order_activatable?(@order)
         @gift_coupon.apply(@order)
         flash[:success] = Spree.t(:gift_code_applied)
         return true
