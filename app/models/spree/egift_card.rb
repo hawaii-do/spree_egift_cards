@@ -45,7 +45,7 @@ module Spree
     end
 
     def send_email
-      logger.info "SEND EMAIL"
+      EgiftCardMailer.notification_email(self).deliver_now
     end
 
     def name

@@ -15,11 +15,18 @@ require 'database_cleaner'
 require 'factory_girl'
 require File.expand_path('../../factories', __FILE__)
 require 'spree/testing_support/factories'
-
+require 'spree/testing_support/controller_requests'
+require 'spree/testing_support/authorization_helpers'
+require 'spree/api/testing_support/caching'
+require 'spree/api/testing_support/helpers'
+require 'spree/api/testing_support/setup'
 
 
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
+  config.include Spree::Api::TestingSupport::Helpers, :type => :controller
+  config.extend Spree::Api::TestingSupport::Setup, :type => :controller
+
   config.mock_with :rspec
   config.use_transactional_fixtures = false
   config.fail_fast = false
@@ -32,6 +39,7 @@ RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
     expectations.syntax = :expect
   end
+
 end
 
 Dir[File.join(File.dirname(__FILE__), 'support/**/*.rb')].each { |file| require file }

@@ -4,7 +4,7 @@ Spree::CheckoutController.class_eval do
 
   def update
     if @order.update_from_params(params, permitted_checkout_attributes)
-      if @order.gift_code.present?
+      if @order.egift_code.present?
         render :edit and return unless apply_gift_code
       end
 
