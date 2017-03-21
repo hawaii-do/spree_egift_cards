@@ -46,11 +46,6 @@ module Spree
       !purchased_at.nil?
     end
 
-    # Notify the redeemer that he as received an egift card.
-    def send_email
-      EgiftCardMailer.notification_email(self).deliver_now
-    end
-
     def name
       'Egift Card'
     end
@@ -118,14 +113,18 @@ module Spree
       Spree::ShippingCategory.where(name: 'E-Gift Card', store_id: store_id).first
     end
 
+    def code_formatted
+      code.scan(/.{1,4}/).join(' ')
+    end
+
   	private
 
   		# This method will take a column argument so that we can have multiple tokens later if need be.
   		# We check that no other user exists with that token and repeatedly generate another random token while this is true.
   		def generate_token(column)
   		  begin
-  		    self[column] = SecureRandom.hex(6).upcase
-  		  end while Spree::EgiftCard.exists?(column => self[column])
+  		    self[column] = SecureRandom.hex(8).upcase
+  		  end while Spree::EgiftCard.exists?(column => self[column]) || Spree::Variant.exists?(sku: self[column])
   		end
 
   end # EgiftCard
