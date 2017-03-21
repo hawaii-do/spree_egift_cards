@@ -10,7 +10,8 @@ Spree::Order.class_eval do
 		line_items.each do |item|
 			if egift_card = item.egift_card
 				egift_card.update_columns(purchased_at: Time.now, purchaser_id: user_id)
-				egift_card.send_email
+				Spree::EgiftCardMailer.notification_email(egift_card).deliver_now
+				Spree::EgiftCardMailer.copy_notification_email(egift_card, user).deliver_now
 			end
 		end
 		update_column(:shipment_state, 'shipped')
