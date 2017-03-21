@@ -4,12 +4,15 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <h1>You have receive an Egift Card worth <%=@egift_card.currency %> <%= @egift_card.original_value%> from <%= @egift_card.sender_firstname %> <%= @egift_card.sender_lastname %>.</h1>
+    <p>
+      You have receive an Egift Card worth <%=@egift_card.currency %> <%= @egift_card.original_value%> from <%= @egift_card.sender_firstname %> <%= @egift_card.sender_lastname %> with the following message :
+    </p>
+
     <p>
       <%= @egift_card.message %>
     </p>
     <p>
-      Enter this code <%= @egift_card.code %> when you
+      Enter this code <%= @egift_card.code_formatted %> at checkout to redeem your gift card.
     </p>
     <p>Thanks for joining and have a great day!</p>
   </body>
