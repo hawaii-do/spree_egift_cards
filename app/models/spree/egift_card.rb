@@ -4,6 +4,7 @@ module Spree
 
   	before_create {generate_token(:code)}
 
+    # The egift card is created by a *purchaser* and offered to a *redeemer*.
   	belongs_to :purchaser, class_name: 'Spree::User'
   	belongs_to :redeemer, class_name: 'Spree::User'
   	belongs_to :store, class_name: 'Spree::Store'
@@ -25,14 +26,15 @@ module Spree
 
     UNACTIVATABLE_ORDER_STATES = ["complete", "awaiting_return", "returned"]
 
-    def self.with_code(code)
-      where('spree_egift_cards.code = ?', code.upcase)
-    end
+    # def self.with_code(code)
+    #   where('spree_egift_cards.code = ?', code.upcase)
+    # end
 
     def self.active
       where('spree_egift_cards.purchased_at < ?', Time.current)
     end
 
+    # Check if the egift card can be used by the redeemer.
     def order_activatable?(order)
       order &&
       created_at < order.created_at &&
@@ -44,6 +46,7 @@ module Spree
       !purchased_at.nil?
     end
 
+    # Notify the redeemer that he as received an egift card.
     def send_email
       EgiftCardMailer.notification_email(self).deliver_now
     end
@@ -68,6 +71,8 @@ module Spree
       []
     end
 
+    # The variant is the purchaser generate an egift card.
+    # The SKU is the egift card's code.
     def master
       Spree::Variant.find_by_sku(code)
     end
@@ -76,7 +81,7 @@ module Spree
       [master.id]
     end
 
-    # Calculate amount for adjustment.
+    # Calculate amount for adjustment when the redeemer use this egift card as payment method.
     def compute_amount(order)
       credits = order.adjustments.select{|a|a.amount < 0 && a.source_type != 'Spree::GiftCard'}.map(&:amount).sum
       [(order.item_total + order.ship_total + order.additional_tax_total + credits), current_value].min * -1
@@ -92,7 +97,7 @@ module Spree
       self.save
     end
 
-    # Apply egift card when checkout is updated and creates an adjustment.
+    # Apply egift card when the redeemer checkout.
     def apply(order)
       # Nothing to do if the gift card is already associated with the order
       return if order.egift_credit_exists?(self)
@@ -108,6 +113,7 @@ module Spree
       order.update!
     end
 
+    # Egift Card doen't need to to be shipped.
     def shipping_category
       Spree::ShippingCategory.where(name: 'E-Gift Card', store_id: store_id).first
     end
