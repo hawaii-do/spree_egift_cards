@@ -2,6 +2,8 @@ Spree::Order.class_eval do
 
 	attr_accessor :gift_code
 
+	money_methods :egift_cards_total
+
 	def has_egift_card?
     line_items.map(&:egift_card).any?
   end
@@ -34,6 +36,10 @@ Spree::Order.class_eval do
   # regardless of whether or not its currently eligible.
 	def egift_credit_exists?(egift_card)
 	  adjustments.reload.map(&:source_id).include?(egift_card.id)
+	end
+
+	def egift_cards_total
+		adjustments.egift_cards.eligible.sum(:amount)
 	end
 
 end
