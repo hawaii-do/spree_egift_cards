@@ -2,6 +2,7 @@ Spree::StoreController.class_eval do
 
   protected
 
+    # Apply egift card on redeemer's order.
     def apply_gift_code
       if params[:order] && params[:order][:gift_code]
         @order.gift_code = params[:order][:gift_code].delete(' ').upcase
