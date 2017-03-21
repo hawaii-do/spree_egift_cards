@@ -4,7 +4,7 @@ Spree::StoreController.class_eval do
 
     def apply_gift_code
       if params[:order] && params[:order][:gift_code]
-        @order.coupon_code = params[:order][:gift_code]
+        @order.gift_code = params[:order][:gift_code].delete(' ').upcase
       end
       return true if @order.gift_code.blank?
       if @gift_card = Spree::EgiftCard.find_by_code(@order.gift_code) and @gift_card.order_activatable?(@order)
