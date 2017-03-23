@@ -9,6 +9,21 @@ Spree::StoreController.class_eval do
       end
       return true if @order.gift_code.blank?
       if @gift_card = Spree::EgiftCard.find_by_code(@order.gift_code) and @gift_card.order_activatable?(@order)
+        unless @gift_card.same_currency?(@order)
+          flash[:error] = Spree.t(:currency_mismatch)
+          return false
+        end
+
+        unless @gift_card.same_store?(@order)
+          flash[:error] = Spree.t(:store_mismatch)
+          return false
+        end
+
+        unless @gift_card.include_region?(@order)
+          flash[:error] = Spree.t(:region_mismatch)
+          return false
+        end
+
         @gift_card.apply(@order)
         flash[:success] = Spree.t(:gift_code_applied)
         return true

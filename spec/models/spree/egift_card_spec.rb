@@ -88,4 +88,37 @@ RSpec.describe Spree::EgiftCard do
 			expect(adjustments).to be_present
 		end
 	end
+
+	context '#order_activatable?' do
+		let(:order) {Spree::Order.create!}
+		it 'return true if egift_card can be used on order' do
+			expect(egift_card.order_activatable?(order)).to be true
+		end
+
+		it 'return false if insufficiant fund' do
+			egift_card.current_value = 0
+			expect(egift_card.order_activatable?(order)).to be false
+		end
+	end
+
+	context "#same_currency?" do
+		it "return true if egift_card has same currency than order" do
+			order = Spree::Order.create(currency: 'USD' )
+			expect(egift_card.same_currency?(order)).to be true
+		end
+
+		it "return false if egift_card hasn't same currency than order" do
+			order = Spree::Order.create(currency: 'CHF' )
+			expect(egift_card.same_currency?(order)).to be false
+		end
+	end
+
+	context "#same_region?" do
+		it "return true if egift card's regions include order's region" do
+			order = Spree::Order.create(currency: 'USD' )
+			order.region = Spree::Region.first
+			order.save
+			expect(egift_card.include_region?(order)).to be true
+		end
+	end
 end

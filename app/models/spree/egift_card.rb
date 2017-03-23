@@ -70,6 +70,18 @@ module Spree
       !UNACTIVATABLE_ORDER_STATES.include?(order.state)
     end
 
+    def same_currency?(order)
+      order.currency == self.currency
+    end
+
+    def same_store?(order)
+      order.store_id == self.store_id
+    end
+
+    def include_region?(order)
+      self.regions.include?(order.region)
+    end
+
     def active?
       !purchased_at.nil?
     end

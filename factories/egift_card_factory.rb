@@ -9,9 +9,11 @@ FactoryGirl.define do
   	sender_firstname		"Lucky"
 		sender_lastname			"Luke"
 
-		original_value			"100"
+		original_value			100.0
 		current_value				{original_value}
 		currency						"USD"
+    created_at          1.year.ago
+
 
     before(:create) do |card|
       card.store = Spree::Store.where(code: 'jones').first || create(:jones)

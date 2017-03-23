@@ -24,8 +24,6 @@ RSpec.describe Spree::EgiftCardsController, type: :controller do
 
 	context "POST create with valid params" do
 
-
-
 		params = {:egift_card => {:recipient_email=>'jo@dalton.com',
 						:recipient_name => 'Jo Dalton',
 						:sender_email => 'lucky@luke.com', :sender_name => 'Lucky Luke',
