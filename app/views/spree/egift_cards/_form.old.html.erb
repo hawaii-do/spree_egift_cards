@@ -8,29 +8,35 @@
         <%= f.error_message_on :recipient_email %>
       <% end %>
     </div>
-
     <div class="col-md-4">
-      <%= f.field_container :recipient_name, class: ['form-group']  do %>
-        <%= f.label :recipient_name %> <span class="required">*</span><br/>
-        <%= f.text_field :recipient_name, :class => "form-control" %>
-        <%= f.error_message_on :recipient_name %>
+      <%= f.field_container :recipient_firstname, class: ['form-group'] do %>
+        <%= f.label :recipient_firstname %> <span class="required">*</span><br/>
+        <%= f.text_field :recipient_firstname, :class => "form-control" %>
+        <%= f.error_message_on :recipient_firstname %>
+      <% end %>
+    </div>
+    <div class="col-md-4">
+      <%= f.field_container :recipient_lastname, class: ['form-group']  do %>
+        <%= f.label :recipient_lastname %> <span class="required">*</span><br/>
+        <%= f.text_field :recipient_lastname, :class => "form-control" %>
+        <%= f.error_message_on :recipient_lastname %>
       <% end %>
     </div>
   </div>
   <div class="row clearfix">
-    <div  class="col-md-4">
-      <%= f.field_container :sender_email, class: ['form-group'] do %>
-        <%= f.label :sender_email %> <span class="required">*</span><br/>
-        <%= f.text_field :sender_email, :class => "form-control" %>
-        <%= f.error_message_on :sender_email %>
+    <div class="col-md-4">
+      <%= f.field_container :sender_firstname, class: ['form-group'] do %>
+        <%= f.label :sender_firstname %> <span class="required">*</span>
+        <%= f.text_field :sender_firstname, :class => "form-control" %>
+        <%= f.error_message_on :sender_firstname %>
       <% end %>
     </div>
 
     <div class="col-md-4">
-      <%= f.field_container :sender_name, class: ['form-group'] do %>
-        <%= f.label :sender_name %> <span class="required">*</span>
-        <%= f.text_field :sender_name, :class => "form-control" %>
-        <%= f.error_message_on :sender_name %>
+      <%= f.field_container :sender_lastname, class: ['form-group'] do %>
+        <%= f.label :sender_lastname %> <span class="required">*</span>
+        <%= f.text_field :sender_lastname, :class => "form-control" %>
+        <%= f.error_message_on :sender_lastname %>
       <% end %>
     </div>
 

@@ -6,6 +6,7 @@ FactoryGirl.define do
     password_confirmation { password }
     authentication_token "authentication_token"
     remember_token "remember_token"
+    user_current_currency = 'USD'
 
     # stub instance methods
     after(:build) do |user|
@@ -16,7 +17,7 @@ FactoryGirl.define do
 
     # associate store Jones to user
     after(:create) do |user|
-      user.stores = [Spree::Store.where(code: 'foobar').first || create(:foobar)]
+      user.stores = [Spree::Store.first || create(:foobar)]
     end
   end
 end

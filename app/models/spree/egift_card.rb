@@ -16,9 +16,8 @@ module Spree
     has_many :egift_card_regions
     has_many :regions, through: :egift_card_regions, class_name: 'Spree::Region'
 
-  	validates :original_value, numericality: { greater_than: 0 }
-  	validates_presence_of :message, :recipient_email, :recipient_firstname, :recipient_lastname,
-  												:currency
+  	validates :original_value, numericality: { greater_than: 9, less_than: 1001 }
+  	validates_presence_of :message, :recipient_email,	:currency
 
     scope :by_store, lambda { |store| where(:store_id => store.id) }
 

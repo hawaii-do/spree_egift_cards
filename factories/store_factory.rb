@@ -5,5 +5,6 @@ FactoryGirl.define do
     url 'foobar.com'
     mail_from_address 'spec@foobar.com'
     default_currency 'FOO'
+
   end
 end
