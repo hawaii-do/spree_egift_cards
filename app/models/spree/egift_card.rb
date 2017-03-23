@@ -22,16 +22,45 @@ module Spree
 
     scope :by_store, lambda { |store| where(:store_id => store.id) }
 
-    # include Spree::CalculatedAdjustments
-
     UNACTIVATABLE_ORDER_STATES = ["complete", "awaiting_return", "returned"]
-
-    # def self.with_code(code)
-    #   where('spree_egift_cards.code = ?', code.upcase)
-    # end
 
     def self.active
       where('spree_egift_cards.purchased_at < ?', Time.current)
+    end
+
+    def create_variant
+      @variant = Spree::Variant.new(sku: self.code, price: self.original_value.to_f)
+      @variant.product_id = self.id
+      @variant.track_inventory = false
+      @variant.tax_category_id = self.tax_category_id
+      @variant.regions << self.regions
+      @variant.is_master = true
+      @variant.currency = self.currency
+      @variant.save(validate: false)
+      @variant
+    end
+
+    def build_line_item
+      @line_item = Spree::LineItem.new(quantity: 1)
+      @line_item.price = self.original_value.to_f
+      @line_item.currency = self.currency
+      @line_item.tax_category_id = self.tax_category_id
+      @line_item.variant = @variant || create_variant
+      @line_item
+    end
+
+    def create_order(user)
+      @order = Spree::Order.new()
+      @order.user_id = user.id
+      @order.currency = self.currency
+      @order.store_id = self.store_id
+      @order.line_items << build_line_item
+      @order.update_totals
+      if @order.save!
+        self.order = @order
+        self.line_item = @line_item
+      end
+      @order
     end
 
     # Check if the egift card can be used by the redeemer.

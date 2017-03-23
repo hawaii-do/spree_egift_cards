@@ -18,9 +18,39 @@ RSpec.describe Spree::EgiftCard do
 			expect(egift_card.regions).to be_present
 		end
 
-		it "has name and discription" do
+		it "has default name and description" do
 			expect(egift_card.name).to eq('Egift Card')
 			expect(egift_card.description).to eq('A convenient and flexible way to share products with family and friends.')
+		end
+
+	end
+
+	context "#create_variant" do
+		let(:variant) {egift_card.create_variant}
+		it "create a specific variant object" do
+			expect(variant.sku).to eq(egift_card.code)
+			expect(variant.price).to eq(egift_card.original_value)
+			expect(variant.currency).to eq(egift_card.currency)
+			expect(variant.id).to be >0
+		end
+	end
+
+	context "#build_line_item" do
+		let(:line_item) {egift_card.build_line_item}
+		it "prepare line item with variant for order" do
+			expect(line_item.price).to eq(egift_card.original_value)
+			expect(line_item.variant).to be_present
+		end
+	end
+
+	context "#create_order" do
+		let(:user) {create(:egift_user)}
+		let(:order) {egift_card.create_order(user)}
+		it "create an egift card's order for user" do
+			expect(order.user_id).to be_present
+			expect(order.line_items).to be_present
+			expect(egift_card.order).to eq(order)
+			expect(egift_card.line_item).to eq(order.line_items.first)
 		end
 	end
 
@@ -57,6 +87,5 @@ RSpec.describe Spree::EgiftCard do
 			adjustments = order.adjustments.reload
 			expect(adjustments).to be_present
 		end
-
 	end
 end
