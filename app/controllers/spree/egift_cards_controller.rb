@@ -15,10 +15,13 @@ class Spree::EgiftCardsController < Spree::StoreController
 
 				#In EgiftCards Helper
 				@egift_card = create_egift_card(egift_card_params)
+				unless @egift_card.save
+					render :new and return
+				end
 
 			  @order = @egift_card.create_order(try_spree_current_user)
 
-			  if @egift_card.save!
+			  if @egift_card.save
 			    flash[:success] = Spree.t(:successfully_created_gift_card)
 			    redirect_to cart_path
 			  else
@@ -45,7 +48,6 @@ class Spree::EgiftCardsController < Spree::StoreController
 	  @egift_card.current_value = params[:egift_card][:original_value]
 	  @egift_card.tax_category = Spree::TaxCategory.where(name: 'E-Gift Card', store_id:  @egift_card.store_id).first
 	  @egift_card.regions << current_region if current_region
-	  @egift_card.save!
 	  @egift_card
 	end
 

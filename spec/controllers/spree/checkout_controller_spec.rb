@@ -24,7 +24,7 @@ RSpec.describe Spree::CheckoutController, type: :controller do
 		end
 
 		it "apply gift card if code is correct" do
-			put :update, state: 'payment', order: {gift_code: egift_card.code}
+			put :update, state: 'payment', order: {gift_code: egift_card.code, pin: egift_card.pin}
 			expect(assigns(:order).gift_code).to eq(egift_card.code)
 			expect(assigns(:gift_card).code).to eq(egift_card.code)
 			expect(egift_card.order_activatable?(assigns(:order))).to be true

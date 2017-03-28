@@ -3,6 +3,7 @@ module Spree
   class EgiftCard < ActiveRecord::Base
 
   	before_create {generate_token(:code)}
+    before_create {generate_pin(:pin)}
 
     # The egift card is created by a *purchaser* and offered to a *redeemer*.
   	belongs_to :purchaser, class_name: 'Spree::User'
@@ -16,7 +17,7 @@ module Spree
     has_many :egift_card_regions
     has_many :regions, through: :egift_card_regions, class_name: 'Spree::Region'
 
-  	validates :original_value, numericality: { greater_than: 9, less_than: 1001 }
+  	validates :original_value, numericality: { greater_than_or_equal_to: 10, less_than_or_equal_to: 1000 }
   	validates_presence_of :message, :recipient_email,	:currency
 
     scope :by_store, lambda { |store| where(:store_id => store.id) }
@@ -79,7 +80,11 @@ module Spree
     end
 
     def include_region?(order)
-      self.regions.include?(order.region)
+      self.regions.include?(order.region) || order.region.nil?
+    end
+
+    def check_pin?(that_pin)
+      self.pin == that_pin.to_i
     end
 
     def active?
@@ -166,6 +171,12 @@ module Spree
   		    self[column] = SecureRandom.hex(8).upcase
   		  end while Spree::EgiftCard.exists?(column => self[column]) || Spree::Variant.exists?(sku: self[column])
   		end
+
+      def generate_pin(column)
+        begin
+          self[column] = Random.rand(100000..999999)
+        end while Spree::EgiftCard.exists?(column => self[column])
+      end
 
   end # EgiftCard
 end # Spree

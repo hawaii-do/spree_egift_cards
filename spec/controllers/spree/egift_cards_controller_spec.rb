@@ -84,5 +84,21 @@ RSpec.describe Spree::EgiftCardsController, type: :controller do
 		end
 	end
 
+	context "POST create with invalid params" do
+
+		params = {:egift_card => {:recipient_email=>'jo@dalton.com',
+						:recipient_name => 'Jo Dalton',
+						:sender_email => 'lucky@luke.com', :sender_name => 'Lucky Luke',
+						:original_value => 1, :message => 'Happy Birthday'}}
+
+		it "doesn't create instance" do
+			post :create, params
+			egift_card = assigns(:egift_card)
+			expect(egift_card).not_to be_valid
+			expect(response).to render_template("new")
+		end
+
+	end
+
 
 end

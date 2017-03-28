@@ -1,6 +1,17 @@
 <!-- insert_after '#payment-methods'-->
 
-<p class='field' data-hook='gift_code'>
-  <%= form.label :gift_code %><br />
-  <%= form.text_field :gift_code, value: nil, class: 'form-control' %>
-</p>
+<div class="row clearfix">
+	<div  class="col-md-6">
+		<p class='field' data-hook='gift_code'>
+		  <%= form.label :gift_code, "Gift Code" %><br />
+		  <%= form.text_field :gift_code, value: nil, class: 'form-control' %>
+		</p>
+	</div>
+
+	<div  class="col-md-6">
+		<p class='field' data-hook='pin'>
+		  <%= form.label :pin, "Pin Number" %><br />
+		  <%= form.text_field :pin, value: nil, class: 'form-control' %>
+		</p>
+	</div>
+</div>

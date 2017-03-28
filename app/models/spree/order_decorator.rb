@@ -1,6 +1,6 @@
 Spree::Order.class_eval do
 
-	attr_accessor :gift_code
+	attr_accessor :gift_code, :pin
 
 	money_methods :egift_cards_total
 

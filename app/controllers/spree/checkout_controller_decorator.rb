@@ -1,6 +1,7 @@
 Spree::CheckoutController.class_eval do
 
   Spree::PermittedAttributes.checkout_attributes << :gift_code
+  Spree::PermittedAttributes.checkout_attributes << :pin
 
   def update
     if @order.update_from_params(params, permitted_checkout_attributes)

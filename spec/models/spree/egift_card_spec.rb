@@ -121,4 +121,26 @@ RSpec.describe Spree::EgiftCard do
 			expect(egift_card.include_region?(order)).to be true
 		end
 	end
+
+	context "#check_pin?" do
+		it "return true if arg is equal to pin" do
+			arg = egift_card.pin
+			expect(egift_card.check_pin?(arg)).to be true
+		end
+
+		it "return true if arg string is equal to pin" do
+			arg = egift_card.pin.to_s
+			expect(egift_card.check_pin?(arg)).to be true
+		end
+
+		it "return false if arg is not equal to pin" do
+			arg = "foobar"
+			expect(egift_card.check_pin?(arg)).to be false
+		end
+
+		it "return nil if arg is nil" do
+			arg = nil
+			expect(egift_card.check_pin?(arg)).to be false
+		end
+	end
 end
