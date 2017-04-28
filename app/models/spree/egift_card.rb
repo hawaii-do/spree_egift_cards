@@ -111,6 +111,10 @@ module Spree
       []
     end
 
+    def slug
+      'egift_card_'<<self.id
+    end
+
     # The variant is the purchaser generate an egift card.
     # The SKU is the egift card's code.
     def master
