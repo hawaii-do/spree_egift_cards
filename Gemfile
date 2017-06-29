@@ -24,6 +24,7 @@ group :development, :test do
 	gem 'pry'
 	gem 'factory_girl_rails'
 	gem 'byebug'
+	gem 'rspec-activemodel-mocks'
 end
 
 gem 'rails', '~>4.2.2'

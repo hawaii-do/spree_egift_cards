@@ -9,6 +9,7 @@ rescue LoadError
 end
 
 require 'rspec/rails'
+require 'rspec/active_model/mocks'
 require 'ffaker'
 require 'pry'
 require 'database_cleaner'
@@ -17,9 +18,21 @@ require File.expand_path('../../factories', __FILE__)
 require 'spree/testing_support/factories'
 require 'spree/testing_support/controller_requests'
 require 'spree/testing_support/authorization_helpers'
+require 'spree/testing_support/controller_requests'
+
 require 'spree/api/testing_support/caching'
 require 'spree/api/testing_support/helpers'
 require 'spree/api/testing_support/setup'
+
+
+def current_admin_user
+  @current_api_user ||= model_model(Spree.user_class, email: "spree@example.com")
+end
+
+def stub_api_authentication!
+  allow_any_instance_of(Spree::Api::BaseController).to receive(:authenticate_user) {current_api_user}
+  allow_any_instance_of(Spree::User).to receive(:send_admin_mail)
+end
 
 
 RSpec.configure do |config|

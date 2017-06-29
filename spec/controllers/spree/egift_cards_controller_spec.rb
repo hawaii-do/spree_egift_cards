@@ -2,8 +2,8 @@ require 'spec_helper'
 
 RSpec.describe Spree::EgiftCardsController, type: :controller do
 	let!(:user) { create(:egift_user) }
-	let!(:store) { Spree::Store.find_by_code('foobar') }
-	let!(:region){ Spree::Region.find_by_code('USA')}
+	let!(:store) { Spree::Store.find_by_code('foobar') || create(:foobar)}
+	let!(:region){ Spree::Region.find_by_code('USA')   || create(:egift_region)}
 
 	before(:each) { @routes = Spree::Core::Engine.routes }
 

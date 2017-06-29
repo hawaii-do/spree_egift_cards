@@ -173,6 +173,10 @@ module Spree
       code.scan(/.{1,4}/).join(' ')
     end
 
+    def promotionable?
+      false
+    end
+
   	private
 
   		# This method will take a column argument so that we can have multiple tokens later if need be.
