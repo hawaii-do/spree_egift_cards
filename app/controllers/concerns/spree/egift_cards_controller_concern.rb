@@ -5,7 +5,8 @@ module Spree::EgiftCardsControllerConcern
 
 		def egift_card_params
 		  params[:egift_card].permit(:recipient_email, :recipient_firstname, :recipient_lastname,
-		  	:sender_firstname, :sender_lastname, :original_value, :message, :recipient_name, :sender_name, :sender_email)
+		  	:sender_firstname, :sender_lastname, :original_value, :message, :recipient_name, :sender_name, :sender_email,
+		  	:receive_copy)
 		end
 
 
