@@ -9,6 +9,7 @@
 <table class="table">
   <thead>
     <tr>
+      <th><%= Spree.t(:created_at) %></th>
       <th><%= Spree.t(:code) %></th>
       <th><%= Spree.t(:pin) %></th>
       <th><%= Spree.t(:currency) %></th>
@@ -23,6 +24,7 @@
   <tbody>
     <% @egift_cards.each do |card| %>
       <tr id="<%= spree_dom_id card %>">
+        <td><%= card.created_at.to_s(:short) %></td>
         <td><%= card.code %></td>
         <td><%= card.pin %></td>
         <td><%= card.currency %></td>
