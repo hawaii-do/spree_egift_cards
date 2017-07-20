@@ -7,6 +7,7 @@ Spree::Core::Engine.routes.draw do
   namespace :api, defaults: { format: 'json' } do
   	namespace :v1 do
   		resources :egift_cards
+  		resources :check_balances
   	end
   end
 
