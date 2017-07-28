@@ -20,7 +20,9 @@ class Spree::EgiftCardsController < Spree::StoreController
 					render :new and return
 				end
 
+				@variant = @egift_card.create_variant
 			  @order = @egift_card.create_order(try_spree_current_user)
+
 
 			  if @egift_card.save
 			    flash[:success] = Spree.t(:successfully_created_gift_card)
