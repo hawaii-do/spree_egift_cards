@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Spree::Api::V1::EgiftCardsController, type: :controller do
 
-	let!(:user) { create(:egift_user) }
-  let!(:store) { Spree::Store.find_by_code('foobar') || create(:foobar)}
+	let(:user) { create(:egift_user) }
+  let!(:store) { Spree::Store.find_by_code('jones') }
   let!(:region){ Spree::Region.find_by_code('USA')   || create(:egift_region)}
 
   before(:each) { @routes = Spree::Core::Engine.routes }
@@ -37,7 +37,7 @@ describe Spree::Api::V1::EgiftCardsController, type: :controller do
     it "has access to current_store" do
       post :create, params
       expect(assigns(:current_store)).to eq(store)
-      expect(assigns(:current_store).code).to eq('foobar')
+      expect(assigns(:current_store).code).to eq('jones')
       expect(assigns(:current_store).regions).to be_present
     end
 
