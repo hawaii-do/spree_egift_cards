@@ -5,6 +5,9 @@ class Spree::Api::V1::EgiftCardsController < Spree::Api::BaseController
 	include Spree::StoresHelper
 	# include Spree::RegionsHelper
 
+
+
+
 	def new
 		render json: {test: :OK}
 	end
@@ -15,6 +18,9 @@ class Spree::Api::V1::EgiftCardsController < Spree::Api::BaseController
 
 	def create
 		@egift_card = create_egift_card(egift_card_params)
+		if @egift_card.validate_original_value(max_original_value)
+			render "spree/api/v1/egift_cards/invalid_resource", status: 422 and return
+		end
 		unless @egift_card.save
 			# invalid_resource!(@egift_card) and return
 			render "spree/api/v1/egift_cards/invalid_resource", status: 422 and return
@@ -30,4 +36,15 @@ class Spree::Api::V1::EgiftCardsController < Spree::Api::BaseController
 	    render "spree/api/v1/egift_cards/invalid_resource", status: 422
 	  end
 	end
+
+	private
+
+		def max_original_value
+			case current_store.code
+			when 'jones' then 2000
+			else 1000
+			end
+		end
+
+
 end

@@ -5,7 +5,7 @@ Spree::Order.class_eval do
 	money_methods :egift_cards_total
 
 	def has_egift_card?
-    line_items.map(&:egift_card).any?
+    variants.map(&:egift_card).any?
   end
 
 	def activate_egift_cards
@@ -13,7 +13,7 @@ Spree::Order.class_eval do
 			if egift_card = item.egift_card
 				egift_card.update_columns(purchased_at: Time.now, purchaser_id: user_id)
 				Spree::EgiftCardMailer.notification_email(egift_card).deliver_now
-				Spree::EgiftCardMailer.copy_notification_email(egift_card, user).deliver_now
+				Spree::EgiftCardMailer.copy_notification_email(egift_card, user).deliver_now if egift_card.receive_copy
 			end
 		end
 		update_column(:shipment_state, 'shipped')

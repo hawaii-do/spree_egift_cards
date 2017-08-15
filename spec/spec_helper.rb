@@ -34,6 +34,10 @@ def stub_api_authentication!
   allow_any_instance_of(Spree::User).to receive(:send_admin_mail)
 end
 
+def stub_current_store!
+  allow_any_instance_of(Spree::Api::V1::EgiftCardsController).to receive(:current_store) {Spree::Store.first}
+end
+
 
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods

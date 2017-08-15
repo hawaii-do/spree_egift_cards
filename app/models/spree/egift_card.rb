@@ -17,7 +17,7 @@ module Spree
     has_many :egift_card_regions
     has_many :regions, through: :egift_card_regions, class_name: 'Spree::Region'
 
-  	validates :original_value, numericality: { greater_than_or_equal_to: 10, less_than_or_equal_to: 1000 }
+  	validates :original_value, numericality: { greater_than_or_equal_to: 10, less_than_or_equal_to: 2000 }
   	validates_presence_of :message, :recipient_email,	:currency
 
     scope :by_store, lambda { |store| where(:store_id => store.id) }
@@ -175,6 +175,23 @@ module Spree
 
     def promotionable?
       false
+    end
+
+    def validate_original_value(max_original_value)
+      if self.original_value > max_original_value
+        errors.add(:original_value, "The maximum value authorized is #{max_original_value}.")
+        return true
+      end
+    end
+
+    # Use the store-default TaxCloud product TIC if none is defined for this product
+    def tax_cloud_tic
+      read_attribute(:tax_cloud_tic) || Spree::Config.taxcloud_default_product_tic
+    end
+
+    # Empty strings are written as nil (which avoids the format validation)
+    def tax_cloud_tic=(tic)
+      write_attribute(:tax_cloud_tic, tic.present? ? tic : nil)
     end
 
   	private

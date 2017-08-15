@@ -87,5 +87,13 @@ describe Spree::Api::V1::EgiftCardsController, type: :controller do
       post :create, params
       expect(response).to render_template(:show)
     end
+
+    it "can't create if original value is too high" do
+      params[:egift_card][:original_value] = 3000
+      post :create, params
+      expect(response.status).to eq(422)
+    end
+
+
   end
 end
